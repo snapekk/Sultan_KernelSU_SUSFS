@@ -109,8 +109,8 @@ jobs:
           patch -p1 < sys.c_fix.patch
 
           cd KernelSU-Next
-          cp ${{ github.workspace }}/kernel_patches/wild/ksun-293ca01-susfs-v2.1.0-a14-6.1-ef16cbce.patch ./
-          patch -p1 < ksun-293ca01-susfs-v2.1.0-a14-6.1-ef16cbce.patch
+          cp ${{ github.workspace }}/kernel_patches/wild/ksun-5a4a718-susfs-f7ae19ef-gki-android14-6.1.patch ./
+          patch -p1 < ksun-5a4a718-susfs-f7ae19ef-gki-android14-6.1.patch
 
       - name: Configure KernelSU
         if: contains(matrix.features, 'wksu')
