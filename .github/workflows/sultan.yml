@@ -231,23 +231,37 @@ jobs:
             cat ./out/google-devices/zumapro/dts/*.dtb > ../AnyKernel3/dtb
           fi
 
-      - name: Create ZIP Files for Different Formats
+      - name: Create ZIP Files for Different Formats & Raw Images
         run: |
+          # 1. Empacotar o AnyKernel3
           echo "Navigating to AnyKernel3 directory..."
           cd ./AnyKernel3
-
-          # Zip the files in the AnyKernel3 directory with a new naming convention
           ZIP_NAME="${{ inputs.codename }}-a16-${{ matrix.features }}-anykernel3.zip"
           echo "Creating zip file $ZIP_NAME..."
           zip -r "../$ZIP_NAME" ./*
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: kernel-${{ inputs.codename }}-${{ matrix.features }}
-          path: |
-            *.zip
-
+          
+          # 2. Coletar os arquivos RAW do diretório out/
+          echo "Collecting raw OUT files for manual flash/DLKM..."
+          cd ../$CONFIG
+          mkdir -p ../raw-out
+          
+          # Busca por todas as imagens geradas (.img, .dtb, .dtbo)
+          find ./out -type f \( -name "*.img" -o -name "*.dtb" -o -name "*.dtbo" \) -exec cp {} ../raw-out/ \;
+          
+          # Busca por todos os módulos do kernel (.ko) para montar a vendor/system DLKM
+          mkdir -p ../raw-out/modules
+          find ./out -type f -name "*.ko" -exec cp {} ../raw-out/modules/ \;
+          
+          # Copia o binário bruto do Image por precaução
+          cp ./out/arch/arm64/boot/Image ../raw-out/ 2>/dev/null || true
+          cp ./out/arch/arm64/boot/Image.lz4 ../raw-out/ 2>/dev/null || true
+          
+          # 3. Zipar o conteúdo RAW
+          cd ../raw-out
+          RAW_ZIP_NAME="${{ inputs.codename }}-a16-${{ matrix.features }}-raw-out.zip"
+          echo "Creating raw zip file $RAW_ZIP_NAME..."
+          zip -r "../$RAW_ZIP_NAME" ./*
+          
       - name: Collect .rej files
         if: ${{ always() }}
         id: collect_rej
