@@ -55,7 +55,7 @@ jobs:
         Please ensure compatibility!
         
         **Sultan Commits Used:**
-        -> https://github.com/kerneltoast/android_kernel_google_tensynos/commit/TENSYNOS_HASH
+        -> https://github.com/snapekk/android_kernel_google_tensynos/commit/TENSYNOS_HASH
         
         Module: 
         -> https://github.com/sidex15/ksu_module_susfs
@@ -105,7 +105,7 @@ jobs:
 
       - name: Fetch and Inject Sultan Commits
         run: |
-          TENSYNOS_COMMIT=$(git ls-remote https://github.com/kerneltoast/android_kernel_google_tensynos HEAD | awk '{print $1}')
+          TENSYNOS_COMMIT=$(git ls-remote https://github.com/snapekk/android_kernel_google_tensynos HEAD | awk '{print $1}')
           
           # Replace placeholders in RELEASE_NOTES
           UPDATED_NOTES="${RELEASE_NOTES//TENSYNOS_HASH/$TENSYNOS_COMMIT}"
